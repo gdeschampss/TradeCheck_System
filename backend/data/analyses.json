@@ -1,0 +1,66 @@
+[
+  {
+    "id": "a72d42c2-3b94-4cbd-b419-274103e333b9",
+    "createdAt": "2026-06-05T20:20:49.964Z",
+    "extractedData": [
+      {
+        "documentName": "Sales Invoice_90503988 (1).pdf",
+        "fields": {
+          "supplier": "Baillie Lumber Co.",
+          "importer": "TRIANGULO PISOS E PAINEIS LTDA",
+          "hsCode": "4407910063",
+          "incoterm": "CIF PARANAGUA",
+          "grossWeight": "23118 KGS",
+          "quantity": "12,172 BF (28.725 M3), 1715 PIECES",
+          "totalValue": "USD 34,081.60",
+          "containerNumber": "ZCSU7698660",
+          "portOfDischarge": "PARANAGUA"
+        }
+      },
+      {
+        "documentName": "Invoice e Manifest_DA2309 (1).pdf",
+        "fields": {}
+      }
+    ],
+    "report": {
+      "executiveSummary": {
+        "documentationStatus": "Pending further documentation and clarification",
+        "riskLevel": "Medium Risk",
+        "generalRecommendation": "All remaining foreign trade documents must be provided for a comprehensive review and cross-verification to ensure compliance and avoid customs delays."
+      },
+      "detailedAnalysis": [
+        {
+          "problemDescription": "The document 'Invoice e Manifest_DA2309 (1).pdf' is completely blank and provides no information for analysis or cross-verification.",
+          "locationIdentified": "Invoice e Manifest_DA2309 (1).pdf",
+          "riskClassification": "High Risk",
+          "potentialImpact": "Inability to cross-verify critical shipment details, potential non-compliance with import regulations, customs delays, and penalties due to missing or unverifiable information. This document is essential for a complete review.",
+          "suggestedCorrection": "Request a valid and complete copy of the 'Invoice e Manifest_DA2309 (1).pdf' document immediately for review."
+        },
+        {
+          "problemDescription": "Net weight for the goods is not explicitly stated on the Commercial Invoice in KGS or LBS. 'MEASUREMENT: Net' refers to the quantity measurement (BF/M3) and not the cargo's net weight.",
+          "locationIdentified": "Sales Invoice_90503988 (1).pdf",
+          "riskClassification": "Low Risk",
+          "potentialImpact": "Potential discrepancies with customs declarations if net weight is a required data element for import duties or statistical reporting. May lead to requests for clarification from customs authorities.",
+          "suggestedCorrection": "Request clarification from the supplier to confirm the net weight of the goods in KGS/LBS and ensure it is included on future commercial invoices or a separate weight certificate (e.g., Packing List)."
+        },
+        {
+          "problemDescription": "The Port of Loading for the shipment is not explicitly stated on the Commercial Invoice.",
+          "locationIdentified": "Sales Invoice_90503988 (1).pdf",
+          "riskClassification": "Low Risk",
+          "potentialImpact": "Minor delays or requests for clarification from customs or carriers if this information is not explicitly provided in other supporting documents like the Bill of Lading.",
+          "suggestedCorrection": "Ensure the Port of Loading is clearly stated on the Bill of Lading or other relevant shipping documents for clarity and completeness."
+        }
+      ],
+      "positiveFindings": [
+        "The Commercial Invoice clearly states the supplier, importer, HS Code, Incoterm (CIF PARANAGUA), gross weight, container number, and port of discharge.",
+        "The total value for CIF is explicitly calculated as the sum of FOB, Freight, and Insurance, matching the item amount before down payment.",
+        "Bank details for wire transfer are provided."
+      ],
+      "finalConclusion": {
+        "overallAssessment": "The Commercial Invoice provides foundational details for the shipment. However, the primary concern is the entirely blank 'Invoice e Manifest_DA2309 (1).pdf', which critically impedes a complete document verification and risk assessment. Additionally, the lack of explicit net weight and port of loading on the invoice represents minor omissions that should be addressed.",
+        "finalRecommendation": "Urgently request all missing and complete documentation, particularly the 'Invoice e Manifest_DA2309 (1).pdf' and a detailed packing list. Ensure all required data elements, including net weight and port of loading, are consistently present across all shipping documents. Await the complete documentation before approving the shipment for clearance."
+      }
+    },
+    "confidenceScore": 78
+  }
+]
