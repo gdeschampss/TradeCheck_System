@@ -1,5 +1,4 @@
 import React from 'react';
-import { CheckCircle, AlertCircle } from 'lucide-react';
 
 interface ValidationPanelProps {
   extractedData: any[];

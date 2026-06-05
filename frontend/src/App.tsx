@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from 'react-router-dom';
-import { FileText, Settings, LogOut, FileSearch, History, Link as LinkIcon } from 'lucide-react';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { Settings, LogOut, FileSearch, History, Link as LinkIcon } from 'lucide-react';
 import { UploadCenter } from './components/UploadCenter';
 import { ValidationPanel } from './components/ValidationPanel';
 import { ResultsDashboard } from './components/ResultsDashboard';
@@ -123,7 +123,8 @@ function ShareableReport() {
   React.useEffect(() => {
     const fetchReport = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/share/${id}`);
+        const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const response = await axios.get(`${apiBaseUrl}/api/share/${id}`);
         setReportData(response.data);
       } catch (err) {
         setError('Report not found or expired.');
