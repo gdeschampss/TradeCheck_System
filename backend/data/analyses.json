@@ -1,5 +1,131 @@
 [
   {
+    "id": "025fc104-3be5-40e1-a299-e9b17b463afb",
+    "createdAt": "2026-06-05T21:12:58.366Z",
+    "extractedData": [
+      {
+        "documentName": "Invoice & packing list.pdf",
+        "fields": {
+          "supplier": "Guangdong Huachang Group Co., Ltd.",
+          "importer": "FORT EXPORT",
+          "incoterm": "EXW",
+          "grossWeight": "1642.0 kg",
+          "netWeight": "1596.9 kg",
+          "quantity": "579 pcs",
+          "totalValue": "3264.40 USD"
+        }
+      }
+    ],
+    "report": {
+      "executiveSummary": {
+        "documentationStatus": "Pending Correction",
+        "riskLevel": "High Risk",
+        "generalRecommendation": "Review and update documentation to include all mandatory shipping and customs information, particularly HS codes, container details, and ports, prior to shipment."
+      },
+      "detailedAnalysis": [
+        {
+          "problemDescription": "HS (Harmonized System) codes are not present on either the Commercial Invoice or the Packing List for any of the listed products.",
+          "locationIdentified": "Commercial Invoice, Packing List",
+          "riskClassification": "High Risk",
+          "potentialImpact": "Significant customs clearance delays, incorrect duty/tax assessment, potential fines or penalties, and non-compliance with import regulations in the destination country. This is a critical omission.",
+          "suggestedCorrection": "Supplier must provide the correct HS code (preferably 6-digit or 8-digit) for each product on the Commercial Invoice. This information should be verified by the importer for accuracy."
+        },
+        {
+          "problemDescription": "Container Number and Seal Number fields are left blank on both the Commercial Invoice and the Packing List.",
+          "locationIdentified": "Commercial Invoice, Packing List",
+          "riskClassification": "Medium Risk",
+          "potentialImpact": "Difficulty in cargo tracking, potential security vulnerabilities, discrepancies when matching with the Bill of Lading, and possible delays during port operations and release.",
+          "suggestedCorrection": "The supplier or freight forwarder must provide the accurate Container Number and Seal Number once the container is loaded and sealed. These details are essential and should be updated on all shipping documents."
+        },
+        {
+          "problemDescription": "Port of Loading and Port of Discharge are not specified on either document.",
+          "locationIdentified": "Commercial Invoice, Packing List",
+          "riskClassification": "Medium Risk",
+          "potentialImpact": "Incomplete shipping instructions, potential errors or omissions in the Bill of Lading preparation, and logistical confusion impacting transit times and delivery schedules.",
+          "suggestedCorrection": "The specific Port of Loading (e.g., 'Shanghai', 'Nansha') and Port of Discharge (e.g., 'Santos', 'Rotterdam') must be added to both documents to ensure clear and comprehensive shipping instructions."
+        }
+      ],
+      "positiveFindings": [
+        "Importer and supplier details are consistent across both documents.",
+        "Net weight and total quantity values match between the Commercial Invoice and Packing List.",
+        "The Incoterm (EXW) is clearly stated on the Commercial Invoice.",
+        "Product descriptions and item codes are consistent, aiding in identification."
+      ],
+      "finalConclusion": {
+        "overallAssessment": "The provided documents contain critical omissions that pose a high risk to the smooth execution of the international trade transaction. While basic commercial details and weights are consistent, the absence of HS codes, container information, and port details renders the shipment non-compliant for immediate customs processing and effective logistics planning.",
+        "finalRecommendation": "Request immediate correction and completion of the Commercial Invoice and Packing List by the supplier. All missing mandatory information, including HS codes, container numbers, seal numbers, Port of Loading, and Port of Discharge, must be accurately provided before the shipment proceeds."
+      }
+    },
+    "confidenceScore": 64
+  },
+  {
+    "id": "8fe351e0-f989-46ec-888a-66e76737d74d",
+    "createdAt": "2026-06-05T21:09:44.707Z",
+    "extractedData": [
+      {
+        "documentName": "Sales Invoice_90503988 (1).pdf",
+        "fields": {
+          "supplier": "Baillie Lumber Co.\n4002 Legion Drive\nHamburg, NY 14075",
+          "importer": "TRIANGULO PISOS E PAINEIS LTDA \n75.059.857/0006-90\nRUA CHANCELER OSWALDO ARANHA, 569 \nHAUER\nCURITIBA, PARANA\n81630-160, BRAZIL",
+          "hsCode": "4407910063",
+          "incoterm": "CIF PARANAGUA",
+          "grossWeight": "23,118 KGS",
+          "quantity": "12,172 BF",
+          "totalValue": "34,081.60",
+          "containerNumber": "ZCSU7698660",
+          "portOfDischarge": "PARANAGUA"
+        }
+      },
+      {
+        "documentName": "Invoice e Manifest_DA2309 (1).pdf",
+        "fields": {}
+      }
+    ],
+    "report": {
+      "executiveSummary": {
+        "documentationStatus": "Incomplete",
+        "riskLevel": "Medium Risk",
+        "generalRecommendation": "Comprehensive documentation (especially Bill of Lading and Packing List) and a valid version of the 'Invoice e Manifest' are required for a complete compliance assessment."
+      },
+      "detailedAnalysis": [
+        {
+          "problemDescription": "The provided file 'Invoice e Manifest_DA2309 (1).pdf' is empty and contains no readable content. This prevents analysis of any potential manifest or additional invoice information.",
+          "locationIdentified": "Invoice e Manifest_DA2309 (1).pdf",
+          "riskClassification": "Medium Risk",
+          "potentialImpact": "Incomplete documentation review, inability to cross-reference critical shipment details, and potential delays if this document is required for customs or logistics.",
+          "suggestedCorrection": "Request a valid, readable version of the 'Invoice e Manifest_DA2309 (1).pdf' from the sender."
+        },
+        {
+          "problemDescription": "Net weight of the goods is not explicitly stated in the Commercial Invoice. While 'GROSS WEIGHTS: 23,118 KGS' is provided, 'net weight' is a distinct and often required data point for customs declarations.",
+          "locationIdentified": "Sales Invoice_90503988 (1).pdf",
+          "riskClassification": "Low Risk",
+          "potentialImpact": "Potential for minor delays or requests for additional information during customs clearance if the receiving country's regulations strictly require net weight on the commercial invoice and no other document provides it.",
+          "suggestedCorrection": "Request the supplier to explicitly state the net weight on the commercial invoice or ensure this information is clearly available on the packing list."
+        },
+        {
+          "problemDescription": "The Port of Loading is not explicitly specified on the Commercial Invoice. While the supplier's location is in New York, the specific loading port (e.g., New York, Norfolk) is essential for logistics and origin declarations.",
+          "locationIdentified": "Sales Invoice_90503988 (1).pdf",
+          "riskClassification": "Low Risk",
+          "potentialImpact": "Minor delays or inquiries during customs clearance if the Bill of Lading is not immediately available or if the invoice is used for pre-declaration.",
+          "suggestedCorrection": "Cross-reference this information with the Bill of Lading upon receipt. Request inclusion on future invoices if deemed critical by the importer or local regulations."
+        }
+      ],
+      "positiveFindings": [
+        "Supplier and importer details are clearly identified and complete.",
+        "HS Code (4407910063) is provided.",
+        "Incoterm (CIF Paranagua) is specified.",
+        "Container number (ZCSU7698660) is present.",
+        "Gross weight (23,118 KGS) is indicated.",
+        "Clear breakdown of value, including FOB, Freight, and Insurance components, is provided."
+      ],
+      "finalConclusion": {
+        "overallAssessment": "The commercial invoice provides a good foundation of information. However, the overall documentation package is incomplete due to the missing content in the 'Invoice e Manifest' file and the absence of other critical shipping documents required for a comprehensive foreign trade compliance review.",
+        "finalRecommendation": "Request all outstanding and valid trade documents, particularly the Bill of Lading and Packing List, along with a functional 'Invoice e Manifest' file, to enable complete cross-verification and ensure full regulatory compliance prior to shipment execution or customs submission."
+      }
+    },
+    "confidenceScore": 78
+  },
+  {
     "id": "a72d42c2-3b94-4cbd-b419-274103e333b9",
     "createdAt": "2026-06-05T20:20:49.964Z",
     "extractedData": [
