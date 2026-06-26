@@ -1,5 +1,7 @@
 # TradeCheck — AI Document Validation Platform for Foreign Trade
 
+<img width="100" height="100" alt="tarde check Logo" src="https://github.com/user-attachments/assets/ffc0697d-9074-4d18-9a13-e54ec7c31d38" />
+
 > **Automate. Validate. Ship with Confidence.**
 
 TradeCheck is an AI-powered documentary validation platform built for foreign trade operations. It replaces the manual, error-prone process of cross-checking commercial documents with an intelligent, standardized, and professional system that generates audit-ready reports in seconds.
