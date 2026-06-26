@@ -1,71 +1,230 @@
-# TradeCheck System
+# TradeCheck — AI Document Validation Platform for Foreign Trade
 
-TradeCheck is a premium, AI-powered document validation MVP designed for foreign trade documentation. It automatically extracts, cross-checks, and analyzes international trade documents to identify inconsistencies, risks, and compliance issues.
+> **Automate. Validate. Ship with Confidence.**
 
-## 🚀 Features
+TradeCheck is an AI-powered documentary validation platform built for foreign trade operations. It replaces the manual, error-prone process of cross-checking commercial documents with an intelligent, standardized, and professional system that generates audit-ready reports in seconds.
 
-- **Document Upload**: Support for Commercial Invoices, Packing Lists, Bills of Lading, and other trade documents.
-- **AI-Powered Analysis**: Utilizes Google Gemini (`gemini-2.5-flash`) to cross-reference data across all uploaded documents.
-- **Smart Validation**: Automatically verifies key fields like:
-  - Supplier & Importer alignment
-  - HS Codes
-  - Incoterms
-  - Gross & Net Weights
-  - Quantities & Total Values
-  - Container Numbers
-  - Ports of Loading & Discharge
-- **Comprehensive Reports**: Provides an executive summary, risk level classification (Low/Medium/High), detailed discrepancy logs, positive findings, and actionable correction recommendations.
-- **Confidence Scoring**: Programmatically calculates data consistency confidence.
+---
 
-## 🛠️ Tech Stack
+## Overview
+
+Foreign trade operations depend on the accuracy and consistency of multiple documents — Commercial Invoices, Packing Lists, and Bills of Lading. A single discrepancy can trigger customs retention, clearance delays, or financial penalties.
+
+TradeCheck solves this by acting as a **Senior Foreign Trade Documentation Specialist powered by AI**. The platform:
+
+1. Accepts uploads of the three core trade documents
+2. Extracts structured data from each file
+3. Cross-references all fields across documents
+4. Classifies every inconsistency by risk level
+5. Generates a professional validation report — shareable and exportable
+
+The MVP is designed for **internal validation with a single client**, replacing a manual ChatGPT-based workflow with a scalable, repeatable system.
+
+---
+
+## Key Features
+
+| Feature | Description |
+|---|---|
+| 📄 Multi-document Upload | Upload Invoice, Packing List, and BL in PDF or DOCX |
+| 🤖 AI Extraction | Structured field extraction per document using GPT |
+| 🔍 Cross-document Validation | Automatic comparison of shared fields across all documents |
+| ⚠️ Risk Classification | Every inconsistency tagged as Low / Medium / High risk |
+| 📊 Confidence Score | AI transparency score for each analysis |
+| 📝 Structured Report | Executive summary, detailed findings, and final recommendation |
+| 🔗 Shareable URL | Public report link at `/share/{analysis-id}` — no login required |
+| 📥 DOCX Export | Download the report as a formatted Word document |
+| 🖨️ Print View | Browser-optimized printable report layout |
+| 🕓 Analysis History | Last 50 analyses stored locally and reopenable |
+
+---
+
+## Tech Stack
 
 ### Frontend
-- **Framework**: React (Vite)
-- **Styling**: Modern CSS / Tailwind CSS
-- **Features**: Interactive dashboard, upload zone, dynamic validation results, detailed report viewer.
+- **React** + **TypeScript**
+- **TailwindCSS** — desktop-first, enterprise UI
+- **React Router** — SPA navigation and shareable report routes
 
 ### Backend
-- **Runtime**: Node.js
-- **Framework**: Express with TypeScript
-- **AI Integration**: `@google/generative-ai` (Gemini SDK)
-- **Document Processing**: `pdf-parse`
+- **Node.js** + **Express**
+- REST API for document processing, analysis orchestration, and report management
 
-## ⚙️ Setup & Installation
+### AI Layer
+- **OpenAI API** — GPT-4o / latest available model
+- Prompt-engineered to behave as a Foreign Trade Documentation Specialist
 
-### Backend Setup
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file in the `backend/` directory:
-   ```env
-   PORT=5000
-   GEMINI_API_KEY=your_gemini_api_key
-   GEMINI_MODEL=gemini-2.5-flash
-   ```
-4. Start the backend in development mode:
-   ```bash
-   npm run dev
-   ```
+### File Processing
+- **PDF extraction** — `pdf-parse` or equivalent
+- **DOCX extraction** — `mammoth` or equivalent
 
-### Frontend Setup
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the frontend:
-   ```bash
-   npm run dev
-   ```
+### Storage
+- **Local JSON storage** (MVP)
+- Architecture prepared for **PostgreSQL** migration
 
-## 📄 License
+---
 
-This project is proprietary. All rights reserved.
+## System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        FRONTEND (React)                     │
+│                                                             │
+│  Upload Center → Validation Panel → Report Viewer          │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ REST API
+┌──────────────────────────▼──────────────────────────────────┐
+│                      BACKEND (Express)                      │
+│                                                             │
+│  /upload → /extract → /analyze → /report → /share          │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+          ┌────────────────┴────────────────┐
+          │                                 │
+┌─────────▼──────────┐           ┌──────────▼─────────┐
+│   File Processor   │           │    OpenAI API       │
+│  (PDF / DOCX)      │           │   (GPT Model)       │
+└────────────────────┘           └────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│                Local Storage (JSON)                         │
+│         [ Prepared for PostgreSQL migration ]               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- OpenAI API Key
+
+---
+
+## Document Intelligence Engine
+
+TradeCheck supports three core foreign trade documents:
+
+### Supported Documents & Fields
+
+**Commercial Invoice**
+- Supplier, Exporter, Importer
+- Invoice Number, Invoice Date
+- Product Description, HS Code
+- Quantity, Unit Value, Total Value
+- Incoterm, Gross Weight, Net Weight
+
+**Packing List**
+- Supplier, Importer
+- Gross Weight, Net Weight
+- Quantity, Number of Packages, Volume
+- Container Number
+
+**Bill of Lading (BL)**
+- Shipper, Consignee, Notify Party
+- Container Number, BL Number
+- Gross Weight, Vessel
+- Port of Loading, Port of Discharge
+
+### Validation Logic
+
+The AI compares shared fields across all three documents and flags:
+
+- **Supplier / Shipper mismatches** — different names across documents
+- **Weight discrepancies** — gross/net weight inconsistencies
+- **Quantity mismatches** — units differ between Invoice and Packing List
+- **Container number conflicts** — BL vs. Packing List container IDs
+- **HS Code issues** — missing or conflicting tariff classifications
+- **Incoterm inconsistencies** — missing or contradicting trade terms
+- **Incomplete documents** — mandatory fields left blank
+
+### Risk Classification
+
+| Level | Meaning |
+|---|---|
+| 🟢 Low Risk | Minor or cosmetic inconsistency, unlikely to cause operational issues |
+| 🟡 Medium Risk | Relevant inconsistency that should be corrected before shipment |
+| 🔴 High Risk | Critical inconsistency with direct customs or financial risk |
+
+---
+
+## Report Structure
+
+Every analysis produces a structured report with four sections:
+
+### 1. Executive Summary
+- Overall documentation status
+- Global risk level
+- General recommendation
+
+### 2. Detailed Analysis
+For each issue identified:
+- Problem description
+- Location in the document
+- Risk classification
+- Potential operational impact
+- Suggested correction
+
+### 3. Positive Findings
+- Fields that are consistent and correctly filled across all documents
+
+### 4. Final Conclusion
+- Overall assessment
+- Final recommendation before shipment
+
+### Confidence Score
+
+Every report includes an AI confidence score (e.g., `94% — High Confidence`) based on the completeness and readability of the uploaded documents.
+
+---
+
+## Shareable Reports
+
+After every analysis, a unique public URL is generated automatically:
+
+```
+https://yourdomain.com/share/{analysis-id}
+```
+
+The shareable page displays the full report — Executive Summary, Detailed Analysis, Positive Findings, and Conclusion — with no login required. This allows freight forwarders, customs brokers, and clients to access reports directly.
+
+> **Note:** Report URLs are public by design for the MVP. Authentication and access control are planned for a future version.
+
+---
+
+## Roadmap
+
+The MVP architecture is built to support the following future features without requiring a full rewrite:
+
+- [ ] User authentication and role-based access
+- [ ] PostgreSQL database migration
+- [ ] Multi-company / multi-tenancy support
+- [ ] Audit logs
+- [ ] Custom validation rule sets per client
+- [ ] Knowledge base for trade regulations
+- [ ] Learning system based on historical analyses
+- [ ] External API integrations (customs systems, ERP)
+- [ ] Workflow automation and CRM integrations
+
+---
+
+## Branding
+
+| Token | Value |
+|---|---|
+| Primary | `#FF6B00` (Orange) |
+| Background | `#111111` (Black) |
+| Surface | `#2A2A2A` (Dark Gray) |
+| Neutral | `#F5F5F5` (Light Gray) |
+
+The UI is designed to look and feel like enterprise logistics software — professional, executive, and internationally focused.
+
+---
+
+## License
+
+This project is proprietary software developed for internal client validation.
+All rights reserved.
