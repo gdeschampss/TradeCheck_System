@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Component, type ErrorInfo, type ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
 import { Settings, LogOut, FileSearch, History, Link as LinkIcon, Printer, Loader2, Sparkles, ShieldAlert } from 'lucide-react';
 import { UploadCenter } from './components/UploadCenter';
@@ -8,6 +8,49 @@ import { HistoryPanel } from './components/HistoryPanel';
 import { AuthPage } from './components/AuthPage';
 import { supabase } from './services/supabaseClient';
 import axios from 'axios';
+
+interface ErrorBoundaryProps {
+  children?: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  public state: ErrorBoundaryState = {
+    hasError: false
+  };
+
+  public static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('ErrorBoundary caught error:', error, errorInfo);
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 bg-[#121214] border border-red-500/20 rounded-2xl text-center space-y-4 max-w-xl mx-auto my-12">
+          <ShieldAlert className="text-red-400 mx-auto" size={40} />
+          <h2 className="text-xl font-bold text-white">An Unexpected Error Occurred</h2>
+          <p className="text-sm text-gray-400">{this.state.error?.message || 'Something went wrong rendering this section.'}</p>
+          <button
+            onClick={() => { this.setState({ hasError: false }); window.location.reload(); }}
+            className="px-5 py-2.5 bg-trade-orange hover:bg-[#E66000] text-white rounded-xl font-bold text-sm transition-all cursor-pointer"
+          >
+            Reload Page
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 function Dashboard({ session }: { session: any }) {
   const [analysisResult, setAnalysisResult] = useState<any>(null);
@@ -24,7 +67,7 @@ function Dashboard({ session }: { session: any }) {
 
   const handleSelectReport = (report: any) => {
     setAnalysisResult(report);
-    setActiveTab('upload'); // Switch back to main dashboard view to display this report
+    setActiveTab('upload');
   };
 
   const handleLogOut = async () => {
@@ -122,31 +165,33 @@ function Dashboard({ session }: { session: any }) {
           </div>
         </header>
 
-        {/* Scrollable Workspace */}
+        {/* Scrollable Workspace with ErrorBoundary */}
         <div className="flex-1 overflow-auto p-8">
           <div className="max-w-5xl mx-auto">
-            {activeTab === 'history' ? (
-              <HistoryPanel onSelectReport={handleSelectReport} />
-            ) : analysisResult ? (
-              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {/* Extracted Panel */}
-                <ValidationPanel extractedData={analysisResult.extractedData} />
-                
-                {/* Analysis Dashboard */}
-                <ResultsDashboard analysis={analysisResult} />
-                
-                <div className="flex justify-center mt-10">
-                  <button 
-                    onClick={resetAnalysis}
-                    className="px-6 py-3 bg-white hover:bg-gray-100 text-black rounded-xl font-bold text-sm transition-colors cursor-pointer shadow-lg shadow-black/10"
-                  >
-                    Start New Validation
-                  </button>
+            <ErrorBoundary>
+              {activeTab === 'history' ? (
+                <HistoryPanel onSelectReport={handleSelectReport} />
+              ) : analysisResult ? (
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  {/* Extracted Panel */}
+                  <ValidationPanel extractedData={analysisResult.extractedData} />
+                  
+                  {/* Analysis Dashboard */}
+                  <ResultsDashboard analysis={analysisResult} />
+                  
+                  <div className="flex justify-center mt-10">
+                    <button 
+                      onClick={resetAnalysis}
+                      className="px-6 py-3 bg-white hover:bg-gray-100 text-black rounded-xl font-bold text-sm transition-colors cursor-pointer shadow-lg shadow-black/10"
+                    >
+                      Start New Validation
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <UploadCenter onAnalysisComplete={handleAnalysisComplete} />
-            )}
+              ) : (
+                <UploadCenter onAnalysisComplete={handleAnalysisComplete} />
+              )}
+            </ErrorBoundary>
           </div>
         </div>
       </main>
@@ -256,7 +301,7 @@ function ShareableReport() {
         {/* Public view includes both Panels: Extraction Panel and Inconsistency Results */}
         <div className="space-y-8">
           <div className="print:break-inside-avoid">
-            <ValidationPanel extractedData={reportData.extractedData} />
+            <ValidationPanel extractedData={reportData?.extractedData} />
           </div>
           <div className="print:break-inside-avoid">
             <ResultsDashboard analysis={reportData} />

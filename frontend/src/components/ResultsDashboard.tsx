@@ -2,17 +2,20 @@ import React from 'react';
 import { ShieldAlert, ShieldCheck, Shield, AlertTriangle, CheckCircle, Info, FileCheck } from 'lucide-react';
 
 interface ResultsDashboardProps {
-  analysis: any;
+  analysis?: any;
 }
 
 export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ analysis }) => {
   if (!analysis || !analysis.report) return null;
 
-  const { report, confidenceScore } = analysis;
+  const { report, confidenceScore = 0 } = analysis;
+  const execSummary = report.executiveSummary || {};
+  const riskLevel = execSummary.riskLevel || 'Unknown Risk';
   
-  const getRiskColor = (level: string) => {
-    if (level?.toLowerCase().includes('high')) return 'text-red-400 bg-red-500/10 border-red-500/20';
-    if (level?.toLowerCase().includes('medium')) return 'text-orange-400 bg-orange-500/10 border-orange-500/20';
+  const getRiskColor = (level?: string) => {
+    if (!level) return 'text-gray-400 bg-gray-500/10 border-gray-500/20';
+    if (level.toLowerCase().includes('high')) return 'text-red-400 bg-red-500/10 border-red-500/20';
+    if (level.toLowerCase().includes('medium')) return 'text-orange-400 bg-orange-500/10 border-orange-500/20';
     return 'text-green-400 bg-green-500/10 border-green-500/20';
   };
 
@@ -43,13 +46,13 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ analysis }) 
         </div>
 
         {/* Risk Card */}
-        <div className={`p-6 rounded-2xl border flex items-center justify-between shadow-lg ${getRiskColor(report.executiveSummary.riskLevel)}`}>
+        <div className={`p-6 rounded-2xl border flex items-center justify-between shadow-lg ${getRiskColor(riskLevel)}`}>
           <div>
             <p className="text-[10px] font-bold uppercase tracking-wider mb-1 opacity-80">Overall Risk Level</p>
-            <h3 className="text-2xl font-extrabold">{report.executiveSummary.riskLevel}</h3>
+            <h3 className="text-2xl font-extrabold">{riskLevel}</h3>
           </div>
           <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center">
-            {report.executiveSummary.riskLevel?.toLowerCase().includes('high') ? (
+            {riskLevel.toLowerCase().includes('high') ? (
               <ShieldAlert size={24} />
             ) : (
               <ShieldCheck size={24} />
@@ -70,11 +73,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ analysis }) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-1">
               <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Documentation Status</p>
-              <p className="text-sm text-gray-200 font-semibold">{report.executiveSummary.documentationStatus}</p>
+              <p className="text-sm text-gray-200 font-semibold">{execSummary.documentationStatus || 'N/A'}</p>
             </div>
             <div className="space-y-1">
               <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">Recommendation</p>
-              <p className="text-sm text-gray-200 font-semibold">{report.executiveSummary.generalRecommendation}</p>
+              <p className="text-sm text-gray-200 font-semibold">{execSummary.generalRecommendation || 'N/A'}</p>
             </div>
           </div>
         </div>
@@ -89,35 +92,37 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ analysis }) 
           <h2 className="text-sm font-bold text-white uppercase tracking-wider">Detailed Analysis & Inconsistencies</h2>
         </div>
         <div className="p-0">
-          {report.detailedAnalysis && report.detailedAnalysis.length > 0 ? (
+          {report.detailedAnalysis && Array.isArray(report.detailedAnalysis) && report.detailedAnalysis.length > 0 ? (
             <div className="divide-y divide-white/[0.03]">
               {report.detailedAnalysis.map((issue: any, idx: number) => (
                 <div key={idx} className="p-6 hover:bg-white/[0.01] transition-colors">
                   <div className="flex items-start justify-between gap-4 mb-3">
-                    <h4 className="font-bold text-white text-base">{issue.problemDescription}</h4>
-                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${getRiskColor(issue.riskClassification)}`}>
-                      {issue.riskClassification}
+                    <h4 className="font-bold text-white text-base">{issue?.problemDescription || 'Issue'}</h4>
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border shrink-0 ${getRiskColor(issue?.riskClassification)}`}>
+                      {issue?.riskClassification || 'Info'}
                     </span>
                   </div>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                     <div>
                       <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Location</p>
-                      <p className="text-xs text-gray-300 mt-1">{issue.locationIdentified}</p>
+                      <p className="text-xs text-gray-300 mt-1">{issue?.locationIdentified || 'N/A'}</p>
                     </div>
                     <div>
                       <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Potential Impact</p>
-                      <p className="text-xs text-gray-300 mt-1">{issue.potentialImpact}</p>
+                      <p className="text-xs text-gray-300 mt-1">{issue?.potentialImpact || 'N/A'}</p>
                     </div>
                   </div>
                   
-                  <div className="mt-4 bg-trade-orange/5 p-4 rounded-xl border border-trade-orange/10 flex items-start gap-3">
-                    <Info size={16} className="text-trade-orange mt-0.5 shrink-0" />
-                    <div>
-                      <p className="text-[10px] text-trade-orange uppercase font-bold tracking-wider">Suggested Correction</p>
-                      <p className="text-xs text-gray-200 mt-1">{issue.suggestedCorrection}</p>
+                  {issue?.suggestedCorrection && (
+                    <div className="mt-4 bg-trade-orange/5 p-4 rounded-xl border border-trade-orange/10 flex items-start gap-3">
+                      <Info size={16} className="text-trade-orange mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-[10px] text-trade-orange uppercase font-bold tracking-wider">Suggested Correction</p>
+                        <p className="text-xs text-gray-200 mt-1">{issue.suggestedCorrection}</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -141,13 +146,13 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ analysis }) 
           </div>
           <div className="p-6">
             <ul className="space-y-3">
-              {report.positiveFindings?.map((finding: string, idx: number) => (
+              {Array.isArray(report.positiveFindings) && report.positiveFindings.map((finding: string, idx: number) => (
                 <li key={idx} className="flex items-start gap-2.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
                   <span className="text-xs text-gray-300">{finding}</span>
                 </li>
               ))}
-              {(!report.positiveFindings || report.positiveFindings.length === 0) && (
+              {(!report.positiveFindings || !Array.isArray(report.positiveFindings) || report.positiveFindings.length === 0) && (
                 <li className="text-xs text-gray-500 italic">No positive findings recorded.</li>
               )}
             </ul>
@@ -165,12 +170,14 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ analysis }) 
           <div className="p-6 space-y-4">
             <div>
               <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Overall Assessment</p>
-              <p className="text-xs text-gray-300 mt-1 leading-relaxed">{report.finalConclusion?.overallAssessment}</p>
+              <p className="text-xs text-gray-300 mt-1 leading-relaxed">{report.finalConclusion?.overallAssessment || 'N/A'}</p>
             </div>
-            <div className="bg-trade-orange/5 p-4 rounded-xl border border-trade-orange/15">
-              <p className="text-[10px] text-trade-orange uppercase font-bold tracking-wider">Final Recommendation</p>
-              <p className="text-xs text-gray-200 mt-1 font-semibold leading-relaxed">{report.finalConclusion?.finalRecommendation}</p>
-            </div>
+            {report.finalConclusion?.finalRecommendation && (
+              <div className="bg-trade-orange/5 p-4 rounded-xl border border-trade-orange/15">
+                <p className="text-[10px] text-trade-orange uppercase font-bold tracking-wider">Final Recommendation</p>
+                <p className="text-xs text-gray-200 mt-1 font-semibold leading-relaxed">{report.finalConclusion.finalRecommendation}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

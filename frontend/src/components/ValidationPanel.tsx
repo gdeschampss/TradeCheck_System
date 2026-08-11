@@ -2,11 +2,11 @@ import React from 'react';
 import { FileText, Database } from 'lucide-react';
 
 interface ValidationPanelProps {
-  extractedData: any[];
+  extractedData?: any[];
 }
 
 export const ValidationPanel: React.FC<ValidationPanelProps> = ({ extractedData }) => {
-  if (!extractedData || extractedData.length === 0) return null;
+  if (!extractedData || !Array.isArray(extractedData) || extractedData.length === 0) return null;
 
   return (
     <div className="bg-[#121214] rounded-2xl border border-white/5 overflow-hidden shadow-2xl">
@@ -27,21 +27,21 @@ export const ValidationPanel: React.FC<ValidationPanelProps> = ({ extractedData 
           <div key={idx} className="bg-[#1a1a1e] border border-white/5 rounded-xl overflow-hidden shadow-md">
             <div className="bg-white/[0.03] border-b border-white/5 px-4 py-3 font-bold text-sm text-trade-orange flex items-center gap-2">
               <FileText size={14} />
-              <span className="truncate">{doc.documentName}</span>
+              <span className="truncate">{doc?.documentName || `Document ${idx + 1}`}</span>
             </div>
             
             <div className="p-4 space-y-3">
-              {doc.fields && Object.entries(doc.fields).map(([key, value]) => (
+              {doc?.fields && typeof doc.fields === 'object' && Object.entries(doc.fields).map(([key, value]) => (
                 <div key={key} className="flex flex-col border-b border-white/[0.02] pb-2 last:border-0 last:pb-0">
                   <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">
                     {key.replace(/([A-Z])/g, ' $1').trim()}
                   </span>
                   <span className="text-xs font-semibold text-gray-300 mt-0.5">
-                    {String(value)}
+                    {String(value ?? '')}
                   </span>
                 </div>
               ))}
-              {(!doc.fields || Object.keys(doc.fields).length === 0) && (
+              {(!doc?.fields || Object.keys(doc.fields).length === 0) && (
                 <div className="text-xs text-gray-500 italic py-2">No key fields extracted.</div>
               )}
             </div>

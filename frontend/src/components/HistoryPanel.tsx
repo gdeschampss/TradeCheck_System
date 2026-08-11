@@ -20,10 +20,18 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
       setError(null);
       const apiBaseUrl = import.meta.env.VITE_API_URL || '';
       const response = await axios.get(`${apiBaseUrl}/api/analyses`);
-      setHistory(response.data);
+      if (Array.isArray(response.data)) {
+        setHistory(response.data);
+      } else {
+        setHistory([]);
+        if (response.data?.error) {
+          setError(response.data.error);
+        }
+      }
     } catch (err: any) {
-      console.error(err);
+      console.error('History fetch error:', err);
       setError(err.response?.data?.error || 'Failed to retrieve analysis history.');
+      setHistory([]);
     } finally {
       setLoading(false);
     }
@@ -40,16 +48,17 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
     try {
       const apiBaseUrl = import.meta.env.VITE_API_URL || '';
       await axios.delete(`${apiBaseUrl}/api/analysis/${id}`);
-      setHistory(prev => prev.filter(item => item.id !== id));
+      setHistory(prev => prev.filter(item => item && item.id !== id));
     } catch (err: any) {
       console.error(err);
       alert('Failed to delete report.');
     }
   };
 
-  const getRiskBadge = (level: string) => {
-    const isHigh = level?.toLowerCase().includes('high');
-    const isMedium = level?.toLowerCase().includes('medium');
+  const getRiskBadge = (level?: string) => {
+    if (!level) return null;
+    const isHigh = level.toLowerCase().includes('high');
+    const isMedium = level.toLowerCase().includes('medium');
     
     if (isHigh) {
       return (
@@ -75,21 +84,24 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
     );
   };
 
-  const getConfidenceLevelColor = (score: number) => {
+  const getConfidenceLevelColor = (score: number = 0) => {
     if (score >= 80) return 'text-green-400';
     if (score >= 50) return 'text-orange-400';
     return 'text-red-400';
   };
 
-  // Filter items
-  const filteredHistory = history.filter(item => {
+  // Safe filter items
+  const safeHistory = Array.isArray(history) ? history : [];
+  const filteredHistory = safeHistory.filter(item => {
+    if (!item) return false;
     const reportTitle = item.report?.executiveSummary?.documentationStatus || 'Report';
     const firstDoc = item.extractedData?.[0]?.documentName || '';
+    const itemId = item.id || '';
     
     const matchesSearch = 
       reportTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
       firstDoc.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.id.includes(searchQuery);
+      itemId.includes(searchQuery);
 
     const risk = item.report?.executiveSummary?.riskLevel || '';
     const matchesRisk = 
@@ -115,7 +127,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
         <p className="text-sm mb-4">{error}</p>
         <button 
           onClick={fetchHistory}
-          className="px-4 py-2 bg-trade-orange hover:bg-[#E66000] text-white rounded-lg text-sm font-bold transition-all"
+          className="px-4 py-2 bg-trade-orange hover:bg-[#E66000] text-white rounded-lg text-sm font-bold transition-all cursor-pointer"
         >
           Try Again
         </button>
@@ -160,13 +172,15 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
         <div className="grid grid-cols-1 gap-4">
           <AnimatePresence mode="popLayout">
             {filteredHistory.map((item, index) => {
+              if (!item) return null;
               const docName = item.extractedData?.[0]?.documentName || 'Multiple documents';
               const docCount = item.extractedData?.length || 0;
               const titleName = docCount > 1 ? `${docName} + ${docCount - 1} doc(s)` : docName;
+              const confidence = item.confidenceScore ?? 0;
               
               return (
                 <motion.div
-                  key={item.id}
+                  key={item.id || index}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
@@ -185,39 +199,45 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
                     <div className="flex items-center gap-6 text-xs text-gray-400 flex-wrap">
                       <span className="flex items-center gap-1.5">
                         <Calendar size={13} className="text-gray-500" />
-                        {new Date(item.createdAt).toLocaleString()}
+                        {item.createdAt ? new Date(item.createdAt).toLocaleString() : 'N/A'}
                       </span>
                       <span className="flex items-center gap-1.5">
                         <Shield size={13} className="text-gray-500" />
                         Confiança:{' '}
-                        <strong className={getConfidenceLevelColor(item.confidenceScore)}>
-                          {item.confidenceScore}%
+                        <strong className={getConfidenceLevelColor(confidence)}>
+                          {confidence}%
                         </strong>
                       </span>
-                      <span className="bg-[#1a1a1e] px-2 py-0.5 rounded text-gray-500 font-mono text-[10px] uppercase border border-white/5">
-                        ID: {item.id.slice(0, 8)}...
-                      </span>
+                      {item.id && (
+                        <span className="bg-[#1a1a1e] px-2 py-0.5 rounded text-gray-500 font-mono text-[10px] uppercase border border-white/5">
+                          ID: {String(item.id).slice(0, 8)}...
+                        </span>
+                      )}
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 self-end md:self-auto shrink-0">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(`/share/${item.id}`, '_blank');
-                      }}
-                      className="p-2.5 bg-[#1a1a1e] hover:bg-[#25252a] text-gray-400 hover:text-white rounded-lg transition-all border border-white/5 tooltip"
-                      title="Open shared page"
-                    >
-                      <ExternalLink size={16} />
-                    </button>
-                    <button
-                      onClick={(e) => handleDelete(item.id, e)}
-                      className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-all border border-red-500/10"
-                      title="Delete validation"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    {item.id && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`/share/${item.id}`, '_blank');
+                        }}
+                        className="p-2.5 bg-[#1a1a1e] hover:bg-[#25252a] text-gray-400 hover:text-white rounded-lg transition-all border border-white/5 tooltip"
+                        title="Open shared page"
+                      >
+                        <ExternalLink size={16} />
+                      </button>
+                    )}
+                    {item.id && (
+                      <button
+                        onClick={(e) => handleDelete(item.id, e)}
+                        className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-all border border-red-500/10"
+                        title="Delete validation"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
                     <button
                       className="flex items-center gap-1.5 px-4 py-2 bg-trade-orange/10 group-hover:bg-trade-orange text-trade-orange group-hover:text-white font-bold text-sm rounded-lg transition-all border border-trade-orange/20"
                     >
