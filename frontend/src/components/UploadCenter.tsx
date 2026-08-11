@@ -48,7 +48,9 @@ export const UploadCenter: React.FC<UploadCenterProps> = ({ onAnalysisComplete }
       onAnalysisComplete(response.data.data);
     } catch (err: any) {
       console.error(err);
-      setError(err.response?.data?.error || 'An error occurred during validation.');
+      const errData = err.response?.data?.error;
+      const errorMessage = typeof errData === 'string' ? errData : (errData?.message || err.message || 'An error occurred during validation.');
+      setError(errorMessage);
     } finally {
       setIsUploading(false);
     }
@@ -89,7 +91,7 @@ export const UploadCenter: React.FC<UploadCenterProps> = ({ onAnalysisComplete }
           animate={{ opacity: 1, y: 0 }}
           className="p-4 bg-red-500/10 text-red-400 rounded-xl border border-red-500/20 text-xs font-semibold"
         >
-          {error}
+          {typeof error === 'string' ? error : String(error)}
         </motion.div>
       )}
 

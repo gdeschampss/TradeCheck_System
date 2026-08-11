@@ -25,12 +25,14 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
       } else {
         setHistory([]);
         if (response.data?.error) {
-          setError(response.data.error);
+          const errData = response.data.error;
+          setError(typeof errData === 'string' ? errData : (errData?.message || 'Failed to retrieve analysis history.'));
         }
       }
     } catch (err: any) {
       console.error('History fetch error:', err);
-      setError(err.response?.data?.error || 'Failed to retrieve analysis history.');
+      const errData = err.response?.data?.error;
+      setError(typeof errData === 'string' ? errData : (errData?.message || err.message || 'Failed to retrieve analysis history.'));
       setHistory([]);
     } finally {
       setLoading(false);
@@ -124,7 +126,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
     return (
       <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-6 rounded-2xl text-center">
         <p className="font-semibold mb-3">Error Loading History</p>
-        <p className="text-sm mb-4">{error}</p>
+        <p className="text-sm mb-4">{typeof error === 'string' ? error : String(error || '')}</p>
         <button 
           onClick={fetchHistory}
           className="px-4 py-2 bg-trade-orange hover:bg-[#E66000] text-white rounded-lg text-sm font-bold transition-all cursor-pointer"
