@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from 'crypto';
 import { extractTextFromFile } from '../services/documentService';
 import { analyzeDocuments } from '../services/aiService';
 import { saveAnalysis, getAnalysisById, getAllAnalyses, deleteAnalysisById } from '../services/storageService';
@@ -36,7 +36,7 @@ export const uploadDocuments = async (req: Request, res: Response): Promise<void
     const analysisResult = await analyzeDocuments(documentsData);
 
     // Save result to Supabase database
-    const analysisId = uuidv4();
+    const analysisId = randomUUID();
     const resultToSave = {
       id: analysisId,
       createdAt: new Date().toISOString(),
