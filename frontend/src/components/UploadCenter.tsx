@@ -41,7 +41,7 @@ export const UploadCenter: React.FC<UploadCenterProps> = ({ onAnalysisComplete }
     });
 
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
       const response = await axios.post(`${apiBaseUrl}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });

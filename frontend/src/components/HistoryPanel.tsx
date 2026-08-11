@@ -18,7 +18,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
     try {
       setLoading(true);
       setError(null);
-      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
       const response = await axios.get(`${apiBaseUrl}/api/analyses`);
       setHistory(response.data);
     } catch (err: any) {
@@ -38,7 +38,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ onSelectReport }) =>
     if (!confirm('Are you sure you want to delete this analysis?')) return;
 
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
       await axios.delete(`${apiBaseUrl}/api/analysis/${id}`);
       setHistory(prev => prev.filter(item => item.id !== id));
     } catch (err: any) {
