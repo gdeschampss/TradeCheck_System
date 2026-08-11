@@ -19,11 +19,16 @@ export const uploadDocuments = async (req: Request, res: Response): Promise<void
     // Extract text from documents
     const documentsData = await Promise.all(
       files.map(async (file) => {
-        const text = await extractTextFromFile(file.path, file.mimetype);
-        return {
-          filename: file.originalname,
-          text: text
-        };
+        try {
+          const text = await extractTextFromFile(file.path, file.mimetype);
+          return {
+            filename: file.originalname,
+            text: text
+          };
+        } finally {
+          const fs = await import('fs');
+          fs.unlink(file.path, () => {});
+        }
       })
     );
 

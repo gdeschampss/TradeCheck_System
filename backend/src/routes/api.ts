@@ -5,10 +5,19 @@ import { requireAuth } from '../middleware/authMiddleware';
 
 const router = Router();
 
-// Configure multer for file uploads
+import os from 'os';
+import fs from 'fs';
+import path from 'path';
+
+// Configure multer for file uploads (use /tmp on Vercel)
+const uploadDir = process.env.VERCEL ? os.tmpdir() : path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

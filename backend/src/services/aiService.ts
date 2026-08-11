@@ -68,7 +68,7 @@ RULES:
 
   try {
     const model = genAI.getGenerativeModel({ 
-      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+      model: process.env.GEMINI_MODEL || "gemini-flash-latest",
       systemInstruction: systemPrompt,
       generationConfig: {
         responseMimeType: "application/json",
