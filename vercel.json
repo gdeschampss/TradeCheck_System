@@ -6,7 +6,13 @@
     },
     "backend": {
       "root": "backend",
-      "entrypoint": "dist/index.js"
+      "framework": "express",
+      "entrypoint": "src/index.ts",
+      "functions": {
+        "**": {
+          "maxDuration": 60
+        }
+      }
     }
   },
   "rewrites": [
