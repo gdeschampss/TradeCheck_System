@@ -335,13 +335,25 @@ function App() {
   useEffect(() => {
     if (session) {
       // Injects JWT automatically in Axios headers
-      const interceptor = axios.interceptors.request.use((config) => {
+      const reqInterceptor = axios.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${session.access_token}`;
         return config;
       });
+
+      const resInterceptor = axios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+          if (error.response?.status === 401) {
+            console.warn('Session expired or unauthorized. Signing out...');
+            supabase.auth.signOut();
+          }
+          return Promise.reject(error);
+        }
+      );
       
       return () => {
-        axios.interceptors.request.eject(interceptor);
+        axios.interceptors.request.eject(reqInterceptor);
+        axios.interceptors.response.eject(resInterceptor);
       };
     }
   }, [session]);
